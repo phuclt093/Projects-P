@@ -1,0 +1,37 @@
+# Forgejo — "GitHub riêng" chạy trên máy nhà.
+# Khởi động:  docker compose up -d        Dừng: docker compose down
+# Dữ liệu (repo, database SQLite, LFS) nằm trong ./data — sao lưu thư mục này là đủ.
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:${FORGEJO_VERSION:-17}
+    container_name: forgejo
+    restart: always
+    environment:
+      - USER_UID=${UID_GID:-1000}
+      - USER_GID=${UID_GID:-1000}
+      # Địa chỉ dùng để clone (IP/tên Tailscale của máy nhà)
+      - FORGEJO__server__ROOT_URL=${ROOT_URL}
+      - FORGEJO__server__DOMAIN=${DOMAIN}
+      - FORGEJO__server__SSH_DOMAIN=${DOMAIN}
+      - FORGEJO__server__SSH_PORT=2222
+      # File nặng (AppImage, deb, model...) dùng Git LFS
+      - FORGEJO__server__LFS_START_SERVER=true
+      # Chỉ mình bạn dùng: tắt đăng ký tài khoản mới
+      - FORGEJO__service__DISABLE_REGISTRATION=true
+      - FORGEJO__service__REQUIRE_SIGNIN_VIEW=true
+      # Repo mới mặc định private; cho phép tạo repo bằng cách push thẳng lên
+      - FORGEJO__repository__DEFAULT_PRIVATE=private
+      - FORGEJO__repository__ENABLE_PUSH_CREATE_USER=true
+      # Bản sao sang GitHub: kiểm tra định kỳ (ngoài việc đẩy ngay khi có commit)
+      - FORGEJO__mirror__DEFAULT_INTERVAL=8h
+      - FORGEJO__mirror__MIN_INTERVAL=10m
+      # Giới hạn dung lượng file upload qua web (MB)
+      - FORGEJO__repository.upload__FILE_MAX_SIZE=2048
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      # Chỉ mở trên IP Tailscale → máy ngoài Tailscale (kể cả mạng LAN nhà) không vào được
+      - "${BIND_IP}:3000:3000"
+      - "${BIND_IP}:2222:22"

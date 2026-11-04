@@ -1,0 +1,11 @@
+# Các project có repo GitHub riêng: <thư mục> <url>
+# Thêm dòng mới khi tạo project LT_ có repo riêng — sync.sh tự clone ở máy kia
+# và tự thêm vào .gitignore của repo Projects-P.
+# Cột 3 = github: repo GIỮ NGUYÊN trên GitHub khi chuyển sang Forgejo (xem LT_GitServer/SETUP.md).
+# Dòng @root <url> (nếu có) = remote của chính Projects-P, do migrate.sh tự ghi.
+LT_AirdropTracker https://github.com/phuclt093/LT_AirdropTracker.git
+LT_ChipmunkT      https://github.com/phuclt093/LT_ChipmunkT.git
+LT_ClickDeal      https://github.com/phuclt093/LT_ClickDeal.git
+LT_TheWiki        https://github.com/phuclt093/LT_TheWiki.git
+LT_Titor          https://github.com/phuclt093/LT_Titor.git  github
+LT_Vitube         https://github.com/phuclt093/LT_Vitube.git

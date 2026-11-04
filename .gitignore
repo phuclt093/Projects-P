@@ -1,0 +1,18 @@
+# Repo Projects-P chỉ chứa phần quản lý + project chưa có repo riêng
+node_modules/
+.venv/
+__pycache__/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+# >>> sync.sh: repo con (tự sinh từ repos.txt, đừng sửa tay)
+/LT_AirdropTracker/
+/LT_ChipmunkT/
+/LT_ClickDeal/
+/LT_TheWiki/
+/LT_Titor/
+/LT_Vitube/
+# <<< sync.sh

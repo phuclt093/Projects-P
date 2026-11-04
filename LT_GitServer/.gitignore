@@ -1,0 +1,4 @@
+# Dữ liệu Forgejo (repo, database) — ở máy nhà, không đưa vào git
+data/
+.env
+migrate.env
