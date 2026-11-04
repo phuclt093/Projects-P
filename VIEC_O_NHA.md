@@ -122,6 +122,8 @@ Có thể máy nhà **đã cài** titor-server rồi. Kiểm tra trước:
   git có thể hỏi đăng nhập Forgejo: user `phuclt`, mật khẩu = **token Forgejo**.
   `LT_Titor` được **giữ trên GitHub** (cố ý, tới khi CodeCraft xong). Các repo khác + Projects-P chuyển sang Forgejo.
 - [ ] Kiểm tra: mở https://git.woe.dpdns.org → thấy các repo `LT_*` + `Projects-P`, đủ branch.
+- ❗ Từ lúc này **đừng sửa code các repo đã chuyển trên GitHub nữa** (không merge PR, không sửa trên web GitHub,
+  không mở chúng bằng Titor) — thay đổi ở GitHub sẽ không về Forgejo. Riêng `LT_Titor` vẫn sửa trên GitHub như cũ.
 - [ ] `cd ~/Projects-P && ./sync.sh status` → mọi dòng ✓
 - ❗ **Chưa xoá** các repo trên GitHub: web (GitHub Pages) và cron (Actions) của ChipmunkT / AirdropTracker /
   Vitube vẫn đang chạy từ đó, sẽ thay dần sang Cloudflare sau (bảng cuối `LT_GitServer/SETUP.md`).

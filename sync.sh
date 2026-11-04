@@ -111,7 +111,14 @@ do_push() {
     git -C "$dir" fetch -q 2>/dev/null
     local a; a="$(ahead "$dir")"
     if [ "$a" -gt 0 ]; then
-      git -C "$dir" push -q && ok "$dir: đã push $a commit" || err "$dir: push lỗi"
+      if git -C "$dir" push -q 2>/dev/null; then ok "$dir: đã push $a commit"
+      elif dirty "$dir"; then err "$dir: remote có commit mới mà máy này còn file chưa commit — commit/stash rồi chạy lại"
+      elif git -C "$dir" pull --rebase -q 2>/dev/null && git -C "$dir" push -q 2>/dev/null; then
+        ok "$dir: remote có commit mới → đã kéo về, xếp commit của mình lên trên rồi push"
+      else
+        git -C "$dir" rebase --abort 2>/dev/null
+        err "$dir: xung đột với commit trên remote — cần gộp tay (cd $dir && git pull --rebase)"
+      fi
     fi
     if dirty "$dir"; then
       warn "$dir: còn $(git -C "$dir" status --porcelain | wc -l) file chưa commit → sang máy kia sẽ KHÔNG có"
