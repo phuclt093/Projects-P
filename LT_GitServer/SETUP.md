@@ -33,8 +33,50 @@ cp .env.example .env
 tailscale ip -4                   # điền IP này vào BIND_IP, DOMAIN, ROOT_URL trong .env
 docker compose up -d
 ```
-Mở `http://<IP-tailscale>:3000` → trang cài đặt: giữ **SQLite**, kéo xuống
+Mở `http://<IP-tailscale>:3000` (hoặc sau bước 2b: `https://<tên-máy>.<tailnet>.ts.net:8443/`) → trang cài đặt: giữ **SQLite**, kéo xuống
 **Administrator account settings** tạo tài khoản admin (vd `phuclt`) → **Install Forgejo**.
+
+## Bước 2b — Mở ra internet bằng Tailscale Funnel (miễn phí, máy truy cập không cần cài gì)
+Cần: Tailscale đã cài và đăng nhập trên máy nhà, MagicDNS + HTTPS bật (admin console → DNS).
+```bash
+cd ~/Projects-P/LT_GitServer
+sudo tailscale funnel 3000        # CHỈ lần đầu: in ra link để duyệt Funnel trên web → duyệt xong Ctrl+C
+./funnel.sh up code               # "code" = tên máy tuỳ chọn (bỏ trống = giữ tên hiện tại)
+./funnel.sh status                # xem lại · ./funnel.sh down để tắt
+```
+Kết quả:
+- `https://code.<tailnet>.ts.net/` → titor-server (editor + AI)
+- `https://code.<tailnet>.ts.net:8443/` → Forgejo
+
+Script tự sửa `.env` (Forgejo chỉ nghe `127.0.0.1`, `ROOT_URL` = địa chỉ :8443) và khởi động lại Forgejo.
+⚠️ Hai địa chỉ này **ai cũng mở được** → mật khẩu Forgejo phải mạnh, không chia sẻ token titor-server.
+Khi có tên miền eu.org (xem `EU_ORG.md`) thì chuyển sang Cloudflare Tunnel + Access.
+
+## Bước 2c — Tên miền riêng `woe.dpdns.org` bằng Cloudflare Tunnel (khuyên dùng, thay cho Funnel)
+Tên miền `woe.dpdns.org` (DigitalPlat, miễn phí) đã Active trên Cloudflare (2026-11-04).
+```bash
+cd ~/Projects-P/LT_GitServer
+./tunnel.sh up        # lần đầu: cài cloudflared, mở link đăng nhập Cloudflare → chọn woe.dpdns.org → Authorize
+./tunnel.sh status    # xem · ./tunnel.sh down để dừng
+./funnel.sh down      # nếu trước đó đã bật Funnel
+```
+- `https://woe.dpdns.org/` → CodeCraft (editor + AI)
+- `https://git.woe.dpdns.org/` → Forgejo
+
+Script tự: tạo tunnel `codecraft`, trỏ DNS 2 tên trên, đặt `ROOT_URL` của Forgejo, thêm origin cho server
+editor, cài cloudflared thành service (tự chạy khi bật máy). Chạy lại nhiều lần vẫn an toàn.
+
+### Cloudflare Access (lớp đăng nhập trước editor) — làm tay 1 lần
+1. Cloudflare dashboard → **Zero Trust** (lần đầu chọn gói **Free**, đặt tên team bất kỳ).
+2. **Access → Applications → Add an application → Self-hosted**.
+3. Application domain: `woe.dpdns.org`. Đặt tên: CodeCraft.
+4. Policy: **Allow** · Include → **Emails** → điền email của bạn và từng người được mời.
+5. Login method: **One-time PIN** (mã gửi qua email, không cần cài gì).
+6. Lưu. Mở `https://woe.dpdns.org` → phải hỏi email + mã PIN mới vào được.
+
+> `git.woe.dpdns.org` **không** đặt Access nếu muốn `git clone/push` bằng dòng lệnh qua HTTPS
+> (Access chặn git CLI). Forgejo đã tự bảo vệ: tắt đăng ký, bắt đăng nhập mới xem được.
+> Mời người mới = tạo tài khoản Forgejo cho họ + thêm email vào policy Access ở bước 4.
 
 ## Bước 3 — Cho git nhớ đăng nhập (cả 2 máy)
 ```bash

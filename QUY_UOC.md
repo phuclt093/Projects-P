@@ -3,13 +3,23 @@
 > File này ghi lại các quy ước khi làm việc với thư mục `Projects-P`.
 > Mỗi khi có quy ước mới, bổ sung vào đây (kèm ngày).
 
+## 0. Mục tiêu tổng
+Code hoàn toàn trên web, **không phụ thuộc thiết bị**: máy nào cũng chỉ cần mở trình duyệt, không cài
+editor hay công cụ gì. Hiện tại máy nhà đóng vai "cloud riêng" (**CodeCraft** — tên mới của Titor — + server + Forgejo)
+vì GitHub giới hạn dung lượng. Mọi thứ dựng trên máy nhà phải **dễ chuyển** sang VPS/cloud sau này
+(Docker, dữ liệu gom trong một thư mục).
+- **AI agent trên web: phải đăng nhập mới dùng; mỗi người tự nhập API key của mình (Claude/Gemini),
+  không dùng chung.** Key chỉ nằm ở trình duyệt người đó, gọi thẳng tới nhà cung cấp, server không
+  giữ key. Terminal + "Claude trên máy nhà" (gói Pro/Max của chủ máy) chỉ dành cho chủ máy.
+
 ## 1. Cấu trúc thư mục
 ```
 Projects-P/
 ├── CLAUDE.md         # Hướng dẫn Claude tự đọc mỗi phiên
 ├── QUY_UOC.md        # Quy ước làm việc (file này)
 ├── TIEN_TRINH.md     # Theo dõi task / tiến trình đang làm
-├── SYNC.md, sync.sh  # Đồng bộ 2 máy qua GitHub
+├── SYNC.md, sync.sh  # Đồng bộ 2 máy (GitHub → Forgejo)
+├── VIEC_O_NHA.md     # Checklist dựng máy nhà
 ├── repos.txt         # Danh sách project có repo GitHub riêng
 └── LT_<TenProject>/  # Mỗi project là một thư mục riêng
 ```
@@ -45,3 +55,6 @@ Projects-P/
 | 2026-11-04 | Thêm mục 6: đồng bộ 2 máy qua GitHub bằng `sync.sh` + `repos.txt`. |
 | 2026-11-04 | Thêm kế hoạch server Git riêng (Forgejo, `LT_GitServer`); `LT_Titor` giữ GitHub. |
 | 2026-11-04 | Bỏ GitHub: code lưu ở Forgejo, phần công khai trên Cloudflare; không mirror sang GitHub. |
+| 2026-11-04 | Thêm mục 0: mục tiêu code hoàn toàn trên web, không phụ thuộc thiết bị; máy nhà là giải pháp tạm, phải dễ chuyển lên VPS. |
+| 2026-11-04 | Yêu cầu AI agent: đăng nhập mới dùng, mỗi người tự dùng API key Claude/Gemini của mình. |
+| 2026-11-04 | Editor đổi tên Titor → CodeCraft. |
